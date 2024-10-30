@@ -7,9 +7,21 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { AiOutlinePlus } from "react-icons/ai"; // Import an add icon (install react-icons if needed)
+import { AiOutlinePlus } from "react-icons/ai";
 
-const AddItem: React.FC = () => {
+interface VideoType {
+  _id: string;
+  link: string;
+  description: string;
+  tags: string[];
+  addedBy: string;
+}
+
+interface AddItemProps {
+  onAdd: (newItem: VideoType) => void; // Use VideoType instead of any
+}
+
+const AddItem: React.FC<AddItemProps> = ({ onAdd }) => {
   const [link, setLink] = useState<string>('');
   const [description, setDescription] = useState<string>('');
   const [tags, setTags] = useState<string[]>([]);
@@ -23,11 +35,44 @@ const AddItem: React.FC = () => {
     }
   };
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    const username = localStorage.getItem("user");
     const newItem = { link, description, tags, type };
-    console.log("New item:", newItem);
-    // Add your submit logic here
+
+    if (type === 'video') {
+      if (!link || !description || tags.length === 0) {
+        alert('Please fill in all fields for videos.');
+        return;
+      }
+
+      try {
+        const response = await fetch('http://localhost:3000/api/add-video', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ link, description, tags, addedBy: username })
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+          console.log("Video added successfully:", data);
+          onAdd(data.video); // Call the onAdd prop to update the video list
+          setLink('');
+          setDescription('');
+          setTags([]);
+        } else {
+          alert(data.message || 'Failed to add video');
+        }
+      } catch (error) {
+        console.error("Error adding video:", error);
+        alert('An error occurred while adding the video');
+      }
+    } else {
+      // Handle article submission logic here
+      console.log("New item:", newItem);
+    }
   };
 
   return (
@@ -46,7 +91,7 @@ const AddItem: React.FC = () => {
               <label htmlFor="link" className="text-sm">Link</label>
               <input
                 id="link"
-                type="url"
+                type="text"
                 value={link}
                 onChange={(e) => setLink(e.target.value)}
                 required
@@ -82,8 +127,7 @@ const AddItem: React.FC = () => {
                 <AiOutlinePlus />
               </button>
             </div>
-            
-            {/* Display added tags */}
+
             <div className="flex flex-wrap gap-2">
               {tags.map((tag, index) => (
                 <span key={index} className="bg-gray-200 px-3 py-1 rounded-full text-sm">

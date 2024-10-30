@@ -19,8 +19,7 @@ const Video: React.FC<VideoProps> = ({ videoSrc, description, tags }) => {
       <iframe
         width="400"
         height="200"
-        src={videoSrc}
-        title="setup a FREE VPN server in the cloud (AWS)"
+        src={`https://www.youtube.com/embed/${videoSrc}`}
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
         className="w-full"
       ></iframe>

@@ -1,28 +1,76 @@
+"use client";
+import Video from "@/components/Video";
+import React, { useEffect, useState } from "react";
+import AddItem from "@/components/AddItem"; // Ensure you import AddItem component
+import { toast } from "@/hooks/use-toast";
 
-import Video from '@/components/Video';
-import React from 'react'
+interface VideoType {
+  _id: string;
+  link: string;
+  description: string;
+  tags: string[];
+  addedBy: string;
+}
 
+const Page = () => {
+  const [videos, setVideos] = useState<VideoType[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
 
+  const fetchVideos = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch("http://localhost:3000/api/get-all-video");
+      const data = await response.json();
+      if (data.success) {
+        setVideos(data.videos); // Assuming the response has this structure
+      } else {
+        setError("Failed to fetch videos");
+      }
+    } catch (err) {
+      console.error(err); // Log the error
+      toast({
+        variant: "destructive",
+        description: "Failed to fetch videos",
+      });
+      setError("An error occurred while fetching videos");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-const Page =  () => {
-  // const { username } = await params;
-  const videoSrc = "https://www.youtube.com/embed/m-i2JBtG4FE"; // Replace with your video URL
-  const description = "This is a description of the video.";
-  const tags = ["React", "Next.js", "JavaScript", "Tutorial"];
+  useEffect(() => {
+    fetchVideos();
+  }, []);
 
-  const videos = [1,2,3,4,5,6,7,8,9,10];
+  // Function to add a new video to the list
+  const addVideo = (newVideo: VideoType) => {
+    setVideos((prevVideos) => [...prevVideos, newVideo]);
+  };
+
+  if (loading) {
+    return <div>Loading...</div>; // You can customize the loading state
+  }
+
+  if (error) {
+    return <div>{error}</div>; // Display any error messages
+  }
 
   return (
-    <div className='items mx-4' >
-        <div className="container grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 py-10 gap-10  mx-auto">
-             {
-               videos.map((video,i)=> (
-                <Video  key={i} videoSrc={videoSrc} description={description} tags={tags} />
-               ))
-             }
-        </div>
+    <div className="items mx-4 pt-5">
+      <AddItem onAdd={addVideo} /> {/* Pass the addVideo function to AddItem */}
+      <div className="container grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 py-10 gap-10 mx-auto">
+        {videos.map((video) => (
+          <Video
+            key={video._id}
+            videoSrc={video.link} // Use the actual video link
+            description={video.description}
+            tags={video.tags}
+          />
+        ))}
+      </div>
     </div>
   );
-}
+};
 
 export default Page;
