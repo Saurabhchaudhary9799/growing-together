@@ -1,7 +1,7 @@
 "use client"
-import { Menu } from 'lucide-react';
 import React, { useEffect, useState } from 'react'
-import { Button } from './ui/button';
+import AddItem from './AddItem';
+import MenuBar from './MenuBar';
 
 
 
@@ -17,8 +17,8 @@ const Navbar = () => {
     <div className='navabr flex justify-between items-center border  py-2 px-4'>
        <h1>{username}</h1>
        <div className='flex items-center gap-x-5'>
-            <Button className=''>Add</Button>
-           <span className='border p-1 rounded'><Menu/></span>
+            <AddItem/>
+            <MenuBar/>
        </div>
     </div>
   )
