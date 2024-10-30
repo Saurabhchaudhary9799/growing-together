@@ -4,6 +4,7 @@ import { FaRegStar } from "react-icons/fa";
 import { FaStar } from "react-icons/fa6";
 import { FaRegCircleCheck } from "react-icons/fa6";
 import { FaCircleCheck } from "react-icons/fa6";
+
 interface VideoProps {
   videoSrc: string; // URL of the video
   description: string; // Description of the video
@@ -13,13 +14,16 @@ interface VideoProps {
 const Video: React.FC<VideoProps> = ({ videoSrc, description, tags }) => {
   const [starred,setStarred] = useState<boolean>(false)
   const [completed,setCompleted] = useState<boolean>(false)
+
+
+
   return (
     <div className="video">
       {/* Video Frame */}
       <iframe
         width="400"
         height="200"
-        src={`https://www.youtube.com/embed/${videoSrc}`}
+        src={videoSrc}
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
         className="w-full"
       ></iframe>

@@ -35,9 +35,22 @@ const AddItem: React.FC<AddItemProps> = ({ onAdd }) => {
     }
   };
 
+  function extractYouTubeID(link:string) {
+    const match = link.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/|.+\?v=))([^&?\/\s]{11})/);
+    return match ? match[1] : null;
+  }
+  
+  const baseUrl = process.env.NODE_ENV === "development" ? "http://localhost:3000" : "https://growing-together.vercel.app"
+
+  console.log(baseUrl)
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     const username = localStorage.getItem("user");
+    const videoID = extractYouTubeID(link);
+    console.log(videoID)
+    const newLink = `https://www.youtube.com/embed/${videoID}`
+  
     const newItem = { link, description, tags, type };
 
     if (type === 'video') {
@@ -47,12 +60,12 @@ const AddItem: React.FC<AddItemProps> = ({ onAdd }) => {
       }
 
       try {
-        const response = await fetch('https://growing-together.vercel.app/api/add-video', {
+        const response = await fetch(`${baseUrl}/api/add-video`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ link, description, tags, addedBy: username })
+          body: JSON.stringify({ link:newLink, description, tags, addedBy: username })
         });
 
         const data = await response.json();

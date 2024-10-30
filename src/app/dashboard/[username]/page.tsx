@@ -17,10 +17,15 @@ const Page = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
+
+  const baseUrl = process.env.NODE_ENV === "development" ? "http://localhost:3000" : "https://growing-together.vercel.app"
+
+  console.log(baseUrl)
+
   const fetchVideos = async () => {
     try {
       setLoading(true);
-      const response = await fetch("https://growing-together.vercel.app/api/get-all-video");
+      const response = await fetch(`${baseUrl}/api/get-all-video`);
       const data = await response.json();
       if (data.success) {
         setVideos(data.videos); // Assuming the response has this structure
