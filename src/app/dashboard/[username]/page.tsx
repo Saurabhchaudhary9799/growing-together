@@ -20,7 +20,7 @@ const Page = () => {
   const fetchVideos = async () => {
     try {
       setLoading(true);
-      const response = await fetch("http://localhost:3000/api/get-all-video");
+      const response = await fetch("https://growing-together.vercel.app/api/get-all-video");
       const data = await response.json();
       if (data.success) {
         setVideos(data.videos); // Assuming the response has this structure

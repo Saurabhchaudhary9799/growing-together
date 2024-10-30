@@ -47,7 +47,7 @@ const AddItem: React.FC<AddItemProps> = ({ onAdd }) => {
       }
 
       try {
-        const response = await fetch('http://localhost:3000/api/add-video', {
+        const response = await fetch('https://growing-together.vercel.app/api/add-video', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
