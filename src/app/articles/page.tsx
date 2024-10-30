@@ -1,10 +1,10 @@
 "use client";
-import Video from "@/components/Video";
 import React, { useEffect, useState } from "react";
-import AddItem from "@/components/AddItem"; // Ensure you import AddItem component
 import { toast } from "@/hooks/use-toast";
+import { Article } from "@/model/Article";
+import AddItem from "@/components/AddItem";
 
-interface VideoType {
+interface ArticleType {
   _id: string;
   link: string;
   description: string;
@@ -13,7 +13,7 @@ interface VideoType {
 }
 
 const Page = () => {
-  const [videos, setVideos] = useState<VideoType[]>([]);
+  const [articles, setArticles] = useState<ArticleType[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -22,13 +22,14 @@ const Page = () => {
 
   console.log(baseUrl)
 
-  const fetchVideos = async () => {
+  const fetchArticles = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`${baseUrl}/api/get-all-video`);
+      const response = await fetch(`${baseUrl}/api/get-all-article`);
+      console.log(response)
       const data = await response.json();
       if (data.success) {
-        setVideos(data.videos); // Assuming the response has this structure
+        setArticles(data.articles); // Assuming the response has this structure
       } else {
         setError("Failed to fetch videos");
       }
@@ -45,13 +46,13 @@ const Page = () => {
   };
 
   useEffect(() => {
-    fetchVideos();
+    fetchArticles();
   }, []);
 
-  // Function to add a new video to the list
-  const addVideo = (newVideo: VideoType) => {
-    setVideos((prevVideos) => [...prevVideos, newVideo]);
+  const addArticle = (newArticle: ArticleType) => {
+    setArticles((prevArticles) => [...prevArticles, newArticle]);
   };
+
 
   if (loading) {
     return <div>Loading...</div>; // You can customize the loading state
@@ -63,14 +64,17 @@ const Page = () => {
 
   return (
     <div className="items mx-4 pt-5">
-      <AddItem onAddVideo={addVideo} onAddArticle={() => {}} /> {/* Pass the addVideo function to AddItem */}
+      <AddItem 
+        onAddArticle={addArticle}
+        onAddVideo={() => {}} // Empty function since this page doesn't handle videos
+      />
       <div className="container grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 py-10 gap-10 mx-auto">
-        {videos.map((video) => (
-          <Video
-            key={video._id}
-            videoSrc={video.link} // Use the actual video link
-            description={video.description}
-            tags={video.tags}
+        {articles.map((article) => (
+          <Article
+            key={article._id}
+            videoSrc={article.link} // Use the actual video link
+            description={article.description}
+            tags={article.tags}
           />
         ))}
       </div>

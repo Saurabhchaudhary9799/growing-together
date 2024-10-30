@@ -13,6 +13,6 @@ const VideoSchema: Schema = new Schema({
   tags: { type: [String], required: true },
   addedBy: { type: String, required: true },
 });
-
+// console.log(mongoose.models)
 export const Video = mongoose.models.Video || mongoose.model<IVideo>('Video', VideoSchema);
 export type { IVideo };

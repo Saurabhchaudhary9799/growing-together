@@ -24,7 +24,7 @@ const MenuBar: React.FC = () => {
           </DrawerHeader>
           
           <nav className="flex flex-col space-y-3 mt-4 px-4 items-center">
-            <Link href="/videos" className="text-blue-600 hover:underline">
+            <Link href="/" className="text-blue-600 hover:underline">
               Videos
             </Link>
             <Link href="/articles" className="text-blue-600 hover:underline">

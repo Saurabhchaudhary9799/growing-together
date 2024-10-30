@@ -5,13 +5,13 @@ import { FaStar } from "react-icons/fa6";
 import { FaRegCircleCheck } from "react-icons/fa6";
 import { FaCircleCheck } from "react-icons/fa6";
 
-interface VideoProps {
+interface ArticleProps {
   videoSrc: string; // URL of the video
   description: string; // Description of the video
   tags: string[]; // Array of tags
 }
 
-const Video: React.FC<VideoProps> = ({ videoSrc, description, tags }) => {
+const Article: React.FC<ArticleProps> = ({ videoSrc, description, tags }) => {
   const [starred,setStarred] = useState<boolean>(false)
   const [completed,setCompleted] = useState<boolean>(false)
 
@@ -20,13 +20,7 @@ const Video: React.FC<VideoProps> = ({ videoSrc, description, tags }) => {
   return (
     <div className="video">
       {/* Video Frame */}
-      <iframe
-        width="400"
-        height="200"
-        src={videoSrc}
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        className="w-full"
-      ></iframe>
+      <a href={videoSrc} target="_blank">{videoSrc}</a>
 
       {/* Description */}
       <div className="flex items-start justify-between mt-4">
@@ -73,4 +67,4 @@ const getTagColor = (tag: string) => {
   }
 };
 
-export default Video;
+export default Article;

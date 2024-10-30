@@ -1,10 +1,7 @@
 // pages/api/add-video.ts
-
-import { Video } from '../../../model/Video';
-
-
 // Connect to MongoDB (assuming a connection function)
 import dbConnect  from '../../../lib/db';
+import { Article } from '@/model/Article';
 
 export async function POST(request: Request) {
   await dbConnect();
@@ -43,10 +40,10 @@ export async function POST(request: Request) {
     }
 
     try {
-      const newVideo = new Video({ link, description, tags, addedBy });
-      await newVideo.save();
+      const newArticle = new Article({ link, description, tags, addedBy });
+      await newArticle.save();
       return Response.json(
-        { message: 'Video added successfully',video: newVideo,success:true},
+        { message: 'Article added successfully',article: newArticle,success:true},
         { status: 201 }
       );
       

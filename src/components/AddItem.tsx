@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -17,81 +17,117 @@ interface VideoType {
   addedBy: string;
 }
 
-interface AddItemProps {
-  onAdd: (newItem: VideoType) => void; // Use VideoType instead of any
+interface ArticleType {
+  _id: string;
+  link: string;
+  description: string;
+  tags: string[];
+  addedBy: string;
 }
 
-const AddItem: React.FC<AddItemProps> = ({ onAdd }) => {
-  const [link, setLink] = useState<string>('');
-  const [description, setDescription] = useState<string>('');
+interface AddItemProps {
+  onAddVideo: (newItem: VideoType) => void;
+  onAddArticle: (newItem: ArticleType) => void;
+}
+
+const AddItem: React.FC<AddItemProps> = ({ onAddVideo, onAddArticle }) => {
+  const [link, setLink] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
   const [tags, setTags] = useState<string[]>([]);
-  const [tagInput, setTagInput] = useState<string>('');
-  const [type, setType] = useState<'article' | 'video'>('article');
+  const [tagInput, setTagInput] = useState<string>("");
+  const [type, setType] = useState<"article" | "video">("article");
 
   const handleAddTag = () => {
     if (tagInput) {
       setTags([...tags, tagInput]);
-      setTagInput('');
+      setTagInput("");
     }
   };
 
-  function extractYouTubeID(link:string) {
-    const match = link.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/|.+\?v=))([^&?\/\s]{11})/);
+  function extractYouTubeID(link: string) {
+    const match = link.match(
+      /(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/|.+\?v=))([^&?\/\s]{11})/
+    );
     return match ? match[1] : null;
   }
-  
-  const baseUrl = process.env.NODE_ENV === "development" ? "http://localhost:3000" : "https://growing-together.vercel.app"
 
-  console.log(baseUrl)
+  const baseUrl =
+    process.env.NODE_ENV === "development"
+      ? "http://localhost:3000"
+      : "https://growing-together.vercel.app";
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     const username = localStorage.getItem("user");
-    const videoID = extractYouTubeID(link);
-    console.log(videoID)
-    const newLink = `https://www.youtube.com/embed/${videoID}`
-  
-    const newItem = { link, description, tags, type };
 
-    if (type === 'video') {
-      if (!link || !description || tags.length === 0) {
-        alert('Please fill in all fields for videos.');
-        return;
-      }
+    if (!link || !description || tags.length === 0) {
+      alert(`Please fill in all fields for ${type}s.`);
+      return;
+    }
 
-      try {
+    try {
+      if (type === "video") {
+        const videoID = extractYouTubeID(link);
+        const newLink = `https://www.youtube.com/embed/${videoID}`;
+
         const response = await fetch(`${baseUrl}/api/add-video`, {
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
-          body: JSON.stringify({ link:newLink, description, tags, addedBy: username })
+          body: JSON.stringify({
+            link: newLink,
+            description,
+            tags,
+            addedBy: username,
+          }),
         });
 
         const data = await response.json();
         if (response.ok) {
-          console.log("Video added successfully:", data);
-          onAdd(data.video); // Call the onAdd prop to update the video list
-          setLink('');
-          setDescription('');
-          setTags([]);
+          onAddVideo(data.video);
         } else {
-          alert(data.message || 'Failed to add video');
+          alert(data.message || "Failed to add video");
         }
-      } catch (error) {
-        console.error("Error adding video:", error);
-        alert('An error occurred while adding the video');
+      } else {
+        const response = await fetch(`${baseUrl}/api/add-article`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            link,
+            description,
+            tags,
+            addedBy: username,
+          }),
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+          onAddArticle(data.article);
+        } else {
+          alert(data.message || "Failed to add article");
+        }
       }
-    } else {
-      // Handle article submission logic here
-      console.log("New item:", newItem);
+
+      // Reset form
+      setLink("");
+      setDescription("");
+      setTags([]);
+    } catch (error) {
+      console.error(`Error adding ${type}:`, error);
+      alert(`An error occurred while adding the ${type}`);
     }
   };
 
+  // Rest of the component remains the same
   return (
     <div>
       <Dialog>
-        <DialogTrigger className="bg-black text-white py-2 px-6 rounded">Add</DialogTrigger>
+        <DialogTrigger className="bg-black text-white py-2 px-6 rounded">
+          Add
+        </DialogTrigger>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Add New Item</DialogTitle>
@@ -100,8 +136,11 @@ const AddItem: React.FC<AddItemProps> = ({ onAdd }) => {
             </DialogDescription>
           </DialogHeader>
           <form onSubmit={handleSubmit} className="space-y-4 mt-4">
+            {/* Rest of the form JSX remains the same */}
             <div className="flex flex-col space-y-2">
-              <label htmlFor="link" className="text-sm">Link</label>
+              <label htmlFor="link" className="text-sm">
+                Link
+              </label>
               <input
                 id="link"
                 type="text"
@@ -113,7 +152,9 @@ const AddItem: React.FC<AddItemProps> = ({ onAdd }) => {
             </div>
 
             <div className="flex flex-col space-y-2">
-              <label htmlFor="description" className="text-sm">Description</label>
+              <label htmlFor="description" className="text-sm">
+                Description
+              </label>
               <textarea
                 id="description"
                 value={description}
@@ -143,18 +184,23 @@ const AddItem: React.FC<AddItemProps> = ({ onAdd }) => {
 
             <div className="flex flex-wrap gap-2">
               {tags.map((tag, index) => (
-                <span key={index} className="bg-gray-200 px-3 py-1 rounded-full text-sm">
+                <span
+                  key={index}
+                  className="bg-gray-200 px-3 py-1 rounded-full text-sm"
+                >
                   {tag}
                 </span>
               ))}
             </div>
 
             <div className="flex flex-col space-y-2">
-              <label htmlFor="type" className="text-sm">Type</label>
+              <label htmlFor="type" className="text-sm">
+                Type
+              </label>
               <select
                 id="type"
                 value={type}
-                onChange={(e) => setType(e.target.value as 'article' | 'video')}
+                onChange={(e) => setType(e.target.value as "article" | "video")}
                 className="border rounded px-3 py-2"
               >
                 <option value="article">Article</option>
