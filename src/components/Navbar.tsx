@@ -1,6 +1,5 @@
 "use client"
 import { Menu } from 'lucide-react';
-import { loadComponents } from 'next/dist/server/load-components';
 import React, { useEffect, useState } from 'react'
 import { Button } from './ui/button';
 

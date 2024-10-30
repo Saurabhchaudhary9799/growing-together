@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useState, ChangeEvent } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { ToastAction } from "@/components/ui/toast";
+
 
 export default function Home() {
   const router = useRouter();
@@ -28,7 +28,6 @@ export default function Home() {
         toast({
           variant: "destructive",
           description: "User not found",
-          action: <ToastAction altText="Try again">Try again</ToastAction>,
         });
       }
     } catch (error) {

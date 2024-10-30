@@ -1,4 +1,5 @@
-import React from "react";
+"use client"
+import React, { useState } from "react";
 import { FaRegStar } from "react-icons/fa";
 import { FaStar } from "react-icons/fa6";
 import { FaRegCircleCheck } from "react-icons/fa6";
@@ -10,13 +11,15 @@ interface VideoProps {
 }
 
 const Video: React.FC<VideoProps> = ({ videoSrc, description, tags }) => {
+  const [starred,setStarred] = useState<boolean>(false)
+  const [completed,setCompleted] = useState<boolean>(false)
   return (
     <div className="video">
       {/* Video Frame */}
       <iframe
         width="400"
         height="200"
-        src="https://www.youtube.com/embed/m-i2JBtG4FE"
+        src={videoSrc}
         title="setup a FREE VPN server in the cloud (AWS)"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
         className="w-full"
@@ -42,8 +45,8 @@ const Video: React.FC<VideoProps> = ({ videoSrc, description, tags }) => {
           </div>
         </div>
         <div className="flex flex-col gap-y-2">
-           <span className="cursor-pointer"><FaRegStar/></span>
-           <span className="cursor-pointer"><FaRegCircleCheck/></span>
+           <span className="cursor-pointer" onClick={()=> setStarred(!starred)}>{starred ? <FaStar/> : <FaRegStar/>}</span>
+           <span className="cursor-pointer" onClick={()=> setCompleted(!completed)}>{completed ? <FaCircleCheck/> : <FaRegCircleCheck/>}</span>
         </div>
       </div>
       <div className="bg-black text-white text-center p-2 rounded mt-2">

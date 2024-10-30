@@ -2,13 +2,11 @@
 import Video from '@/components/Video';
 import React from 'react'
 
-interface Params {
-  username: string;
-}
 
-const Page = async ({ params }: { params: Params }) => {
-  const { username } = await params;
-  const videoSrc = "https://youtu.be/m-i2JBtG4FE?si=_CjEExUxP3K-JC5e"; // Replace with your video URL
+
+const Page =  () => {
+  // const { username } = await params;
+  const videoSrc = "https://www.youtube.com/embed/m-i2JBtG4FE"; // Replace with your video URL
   const description = "This is a description of the video.";
   const tags = ["React", "Next.js", "JavaScript", "Tutorial"];
 
