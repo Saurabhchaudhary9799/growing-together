@@ -8,7 +8,7 @@ interface IVideo extends Document {
 }
 
 const VideoSchema: Schema = new Schema({
-  link: { type: String, required: true },
+  link: { type: String, required: true, unique: true },
   description: { type: String, required: true, maxlength: 500 },
   tags: { type: [String], required: true },
   addedBy: { type: String, required: true },

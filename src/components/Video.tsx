@@ -9,11 +9,13 @@ interface VideoProps {
   videoSrc: string; // URL of the video
   description: string; // Description of the video
   tags: string[]; // Array of tags
+  addedBy: string;
 }
 
-const Video: React.FC<VideoProps> = ({ videoSrc, description, tags }) => {
+const Video: React.FC<VideoProps> = ({ videoSrc, description, tags, addedBy }) => {
   const [starred,setStarred] = useState<boolean>(false)
   const [completed,setCompleted] = useState<boolean>(false)
+  // console.log("yha par", videoSrc, description, tags )
 
 
 
@@ -53,7 +55,7 @@ const Video: React.FC<VideoProps> = ({ videoSrc, description, tags }) => {
         </div>
       </div>
       <div className="bg-black text-white text-center p-2 rounded mt-2">
-         Added By : Saurbh
+         {`Added By : ${addedBy}`}
       </div>
     </div>
   );
