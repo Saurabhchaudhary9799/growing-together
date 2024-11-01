@@ -16,11 +16,12 @@ const Page = () => {
   const [videos, setVideos] = useState<VideoType[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  // console.log("video", videos);
 
 
   const baseUrl = process.env.NODE_ENV === "development" ? "http://localhost:3000" : "https://growing-together.vercel.app"
 
-  console.log(baseUrl)
+  // console.log(baseUrl)
 
   const fetchVideos = async () => {
     try {
@@ -71,6 +72,7 @@ const Page = () => {
             videoSrc={video.link} // Use the actual video link
             description={video.description}
             tags={video.tags}
+            addedBy={video.addedBy}
           />
         ))}
       </div>
