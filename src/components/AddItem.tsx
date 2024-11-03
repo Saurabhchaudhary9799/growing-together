@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios, { AxiosError } from "axios";
 import {
   Dialog,
   DialogContent,
@@ -36,6 +37,7 @@ const AddItem: React.FC<AddItemProps> = ({ onAddVideo, onAddArticle }) => {
   const [tags, setTags] = useState<string[]>([]);
   const [tagInput, setTagInput] = useState<string>("");
   const [type, setType] = useState<"article" | "video">("article");
+  const [loading, setLoading] = useState(false);
 
   const handleAddTag = () => {
     if (tagInput) {
@@ -65,63 +67,55 @@ const AddItem: React.FC<AddItemProps> = ({ onAddVideo, onAddArticle }) => {
       return;
     }
 
+    setLoading(true);
+
     try {
       if (type === "video") {
         const videoID = extractYouTubeID(link);
         const newLink = `https://www.youtube.com/embed/${videoID}`;
 
-        const response = await fetch(`${baseUrl}/api/add-video`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            link: newLink,
-            description,
-            tags,
-            addedBy: username,
-          }),
+        const response = await axios.post(`${baseUrl}/api/add-video`, {
+          link: newLink,
+          description,
+          tags,
+          addedBy: username,
         });
 
-        const data = await response.json();
-        if (response.ok) {
-          onAddVideo(data.video);
+        if (response.status === 201) {
+          onAddVideo(response.data.video);
         } else {
-          alert(data.message || "Failed to add video");
+          alert(response.data.message || "Failed to add video");
         }
       } else {
-        const response = await fetch(`${baseUrl}/api/add-article`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            link,
-            description,
-            tags,
-            addedBy: username,
-          }),
+        const response = await axios.post(`${baseUrl}/api/add-article`, {
+          link,
+          description,
+          tags,
+          addedBy: username,
         });
 
-        const data = await response.json();
-        if (response.ok) {
-          onAddArticle(data.article);
+        if (response.status === 201) {
+          onAddArticle(response.data.article);
         } else {
-          alert(data.message || "Failed to add article");
+          alert(response.data.message || "Failed to add article");
         }
       }
 
-      // Reset form
       setLink("");
       setDescription("");
       setTags([]);
-    } catch (error) {
+    } catch (error: unknown) {
+    if (error instanceof AxiosError && error.response?.status === 409) {
+      alert("Duplicate entry. This video or another field already exists.");
+    } else {
       console.error(`Error adding ${type}:`, error);
       alert(`An error occurred while adding the ${type}`);
     }
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // Rest of the component remains the same
   return (
     <div>
       <Dialog>
@@ -136,7 +130,6 @@ const AddItem: React.FC<AddItemProps> = ({ onAddVideo, onAddArticle }) => {
             </DialogDescription>
           </DialogHeader>
           <form onSubmit={handleSubmit} className="space-y-4 mt-4">
-            {/* Rest of the form JSX remains the same */}
             <div className="flex flex-col space-y-2">
               <label htmlFor="link" className="text-sm">
                 Link
@@ -211,8 +204,9 @@ const AddItem: React.FC<AddItemProps> = ({ onAddVideo, onAddArticle }) => {
             <button
               type="submit"
               className="bg-black text-white py-2 px-4 rounded"
+              disabled={loading}
             >
-              Add Item
+              {loading ? "Adding..." : "Add Item"}
             </button>
           </form>
         </DialogContent>
