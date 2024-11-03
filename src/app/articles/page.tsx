@@ -25,36 +25,36 @@ const Page = () => {
 
   // console.log(baseUrl);
 
-  
+
 
   useEffect(() => {
-    const fetchArticles = async () => {
-      try {
-        setLoading(true);
-        const response = await fetch(`${baseUrl}/api/get-all-article`);
-        console.log(response);
-        const data = await response.json();
-        if (data.success) {
-          setArticles(data.articles); // Assuming the response has this structure
-          console.log("article", articles);
-        } else {
-          setError("Failed to fetch videos");
-          // console.log("article", articles);
+      const fetchArticles = async () => {
+        try {
+          setLoading(true);
+          const response = await fetch(`${baseUrl}/api/get-all-article`);
+          console.log(response);
+          const data = await response.json();
+          if (data.success) {
+            setArticles(data.articles); // Assuming the response has this structure
+            console.log("article", articles);
+          } else {
+            setError("Failed to fetch videos");
+            // console.log("article", articles);
+          }
+        } catch (err) {
+          console.error(err); // Log the error
+          toast({
+            variant: "destructive",
+            description: "Failed to fetch videos",
+          });
+          setError("An error occurred while fetching videos");
+        } finally {
+          setLoading(false);
         }
-      } catch (err) {
-        console.error(err); // Log the error
-        toast({
-          variant: "destructive",
-          description: "Failed to fetch videos",
-        });
-        setError("An error occurred while fetching videos");
-      } finally {
-        setLoading(false);
-      }
-    };
+      };
     fetchArticles();
-    // console.log("article", articles);
-  }, [articles, baseUrl]);
+    console.log("article", articles);
+  }, [baseUrl, articles]);
 
   const addArticle = (newArticle: ArticleType) => {
     setArticles((prevArticles) => [...prevArticles, newArticle]);
