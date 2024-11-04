@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { useState } from "react";
 import { FaRegStar } from "react-icons/fa";
 import { FaStar } from "react-icons/fa6";
@@ -9,13 +9,18 @@ interface VideoProps {
   videoSrc: string; // URL of the video
   description: string; // Description of the video
   tags: string[]; // Array of tags
+  addedBy: string;
 }
 
-const Video: React.FC<VideoProps> = ({ videoSrc, description, tags }) => {
-  const [starred,setStarred] = useState<boolean>(false)
-  const [completed,setCompleted] = useState<boolean>(false)
-
-
+const Video: React.FC<VideoProps> = ({
+  videoSrc,
+  description,
+  tags,
+  addedBy,
+}) => {
+  const [starred, setStarred] = useState<boolean>(false);
+  const [completed, setCompleted] = useState<boolean>(false);
+  // console.log("yha par", videoSrc, description, tags )
 
   return (
     <div className="video">
@@ -48,12 +53,19 @@ const Video: React.FC<VideoProps> = ({ videoSrc, description, tags }) => {
           </div>
         </div>
         <div className="flex flex-col gap-y-2">
-           <span className="cursor-pointer" onClick={()=> setStarred(!starred)}>{starred ? <FaStar/> : <FaRegStar/>}</span>
-           <span className="cursor-pointer" onClick={()=> setCompleted(!completed)}>{completed ? <FaCircleCheck/> : <FaRegCircleCheck/>}</span>
+          <span className="cursor-pointer" onClick={() => setStarred(!starred)}>
+            {starred ? <FaStar /> : <FaRegStar />}
+          </span>
+          <span
+            className="cursor-pointer"
+            onClick={() => setCompleted(!completed)}
+          >
+            {completed ? <FaCircleCheck /> : <FaRegCircleCheck />}
+          </span>
         </div>
       </div>
       <div className="bg-black text-white text-center p-2 rounded mt-2">
-         Added By : Saurbh
+        {`Added By : ${addedBy}`}
       </div>
     </div>
   );
