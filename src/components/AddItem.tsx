@@ -105,12 +105,12 @@ const AddItem: React.FC<AddItemProps> = ({ onAddVideo, onAddArticle }) => {
       setDescription("");
       setTags([]);
     } catch (error: unknown) {
-    if (error instanceof AxiosError && error.response?.status === 409) {
-      alert("Duplicate entry. This video or another field already exists.");
-    } else {
-      console.error(`Error adding ${type}:`, error);
-      alert(`An error occurred while adding the ${type}`);
-    }
+      if (error instanceof AxiosError && error.response?.status === 409) {
+        alert("Duplicate entry. This video or another field already exists.");
+      } else {
+        console.error(`Error adding ${type}:`, error);
+        alert(`An error occurred while adding the ${type}`);
+      }
     } finally {
       setLoading(false);
     }
