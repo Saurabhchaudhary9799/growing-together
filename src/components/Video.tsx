@@ -27,6 +27,7 @@ const Video: React.FC<VideoProps> = ({
       {/* Video Frame */}
       <iframe
         width="400"
+        loading="lazy"
         height="200"
         src={videoSrc}
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
