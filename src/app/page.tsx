@@ -2,7 +2,7 @@
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useState, ChangeEvent } from "react";
+import { useState, ChangeEvent, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 
 
@@ -12,6 +12,15 @@ export default function Home() {
   const [loading, setLoading] = useState<boolean>(false);
   const { toast } = useToast();
   const users: string[] = ["Saurbh", "Harmeet", "Dhirendra"];
+  useEffect(()=>{
+     const alreadyUser:string | null  = localStorage.getItem("user");
+     console.log(typeof(alreadyUser))
+     
+     if(alreadyUser){
+      router.push(`/dashboard/${alreadyUser}`);
+     }
+  },[])
+
   const handleLogin = () => {
     console.log(username);
     try {

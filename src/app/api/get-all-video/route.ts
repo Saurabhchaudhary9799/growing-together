@@ -8,7 +8,7 @@ import dbConnect from "../../../lib/db";
 export async function GET() {
   await dbConnect();
   try {
-    const videos = await Video.find();
+    const videos = await Video.find().sort({ _id: -1 });
     return Response.json(
       { videos, success: true },
       { status: 200 }
